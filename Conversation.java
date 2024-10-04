@@ -12,12 +12,12 @@ class Conversation {
    * Defines the data type of variables
    * and initializes array of canned responses and word pairs for replacements
    */
-  public int round;
-  public String[] transcript;
-  public String[] responses = { "Aha", "Mmm-hm", "Oh, okay", "I see", "Cool" };
-  public int num = 0;
-  public String[][] replacements = { { "I'm", "You" }, { "I am", "You are" }, { "I", "You" }, { "me", "you" },
-      { "am", "are" }, { "you", "I" }, { "my", "your" }, { "your", "my" } };
+  private int round;
+  private String[] transcript;
+  private static String[] responses = { "Aha", "Mmm-hm", "Oh, okay", "I see", "Cool" };
+  private int num = 0;
+  private String[][] replacements = { { "I'm", "You" }, { "I am", "You are" }, { "I", "You" }, { "me", "you" },
+      { "am", "are" }, { "you", "I" }, { "my", "your" }, { "your", "my" }, { "are", "am" } };
 
   // Constructor
   public Conversation() {
@@ -49,30 +49,29 @@ class Conversation {
    * replacing certain words or selecting random canned responses
    */
   public void converse() {
-
-    for (int i = 1; i <= this.round; i = i + 1) {
-      Scanner yourAnswer = new Scanner(System.in);
+    Scanner yourAnswer = new Scanner(System.in);
+    for (int t = 1; t <= this.round; t = t + 1) {
       String input = yourAnswer.nextLine();
       this.transcript[++num] = input;
-      String temp = input;
 
-      String[] wordOfInput = temp.split(" ");
-      for (String each : wordOfInput) {
-        for (String[] replace : replacements) {
-          if (each.equals(replace[0])) {
-            temp = temp.replace(each, replace[1]);
+      String[] wordOfInput = input.split(" ");
+      for (int i = 0; i < wordOfInput.length; i++) {
+        for (int f = 0; f < replacements.length; f++) {
+          if (wordOfInput[i].equals(replacements[f][0])) {
+            wordOfInput[i] = replacements[f][1];
+            break;
           }
         }
       }
-      if (temp.equals(input)) {
+      String finalAns = String.join(" ", wordOfInput);
+      if (finalAns.equals(input)) {
         Random random = new Random();
         int randomIndex = random.nextInt(responses.length);
-        temp = responses[randomIndex];
-        System.out.println(temp);
-        this.transcript[++num] = temp;
+        System.out.println(responses[randomIndex]);
+        this.transcript[++num] = responses[randomIndex];
       } else {
-        System.out.println(temp + "?");
-        this.transcript[++num] = temp + "?";
+        System.out.println(finalAns + "?");
+        this.transcript[++num] = finalAns + "?";
       }
     }
   }
